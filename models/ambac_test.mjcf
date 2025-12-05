@@ -1,0 +1,33 @@
+<mujoco model="ambac_test">
+  <option gravity="0 0 0" timestep="0.01" />
+
+  <worldbody>
+    <!-- Torso body at origin -->
+    <body name="torso" pos="0 0 0">
+      <geom type="box" size="0.5 0.3 0.8" density="1000"/>
+
+      <!-- Left upper arm -->
+      <body name="left_upper_arm" pos="0 0.5 0.3">
+        <joint name="left_shoulder_pitch" type="hinge"
+               axis="0 1 0" range="-90 90" damping="1"/>
+        <geom type="capsule" fromto="0 0 0 0 0.5 0" radius="0.08" density="800"/>
+      </body>
+
+      <!-- Thruster site on torso (we'll reposition this from Python) -->
+      <site name="thruster_main" pos="0.0 -0.6 0.0" size="0.03" type="sphere" />
+
+      <!-- Optional visual geom to show thruster nozzle direction -->
+      <geom name="thruster_main_geom" type="cylinder"
+            pos="0.0 -0.6 0.0"
+            size="0.03 0.15"
+            euler="90 0 0" />
+    </body>
+  </worldbody>
+
+  <actuator>
+    <!-- General actuator applying force at thruster_main site -->
+    <general name="thruster_main_act"
+             site="thruster_main"
+             ctrllimited="true" ctrlrange="0 2000" />
+  </actuator>
+</mujoco>
