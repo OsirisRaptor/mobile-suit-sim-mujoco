@@ -10,7 +10,7 @@
       <body name="left_upper_arm" pos="0 0.5 0.3">
         <joint name="left_shoulder_pitch" type="hinge"
                axis="0 1 0" range="-90 90" damping="1"/>
-        <geom type="capsule" fromto="0 0 0 0 0.5 0" radius="0.08" density="800"/>
+        <geom type="capsule" fromto="0 0 0 0 0.5 0" size="0.08" density="800"/>
       </body>
 
       <!-- Thruster site on torso (we'll reposition this from Python) -->

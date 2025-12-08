@@ -57,6 +57,20 @@ pip install -r requirements.txt
 python -c "from mobile_suit_sim import load_model; print('Import successful!')"
 ```
 
+### Headless Rendering (Dev Containers / CI Environments)
+
+If you're running in a headless environment (no X11 display, dev container, or CI), use the EGL backend for offscreen rendering:
+
+```bash
+# On Linux (with system GL libraries installed):
+MUJOCO_GL=egl python your_script.py
+
+# On dev containers / Ubuntu, first install GL libraries:
+sudo apt-get update && sudo apt-get install -y libegl-mesa0 libegl1-mesa-dev libosmesa6 libosmesa6-dev
+```
+
+The `simulate_and_render()` function will automatically use the EGL backend when `MUJOCO_GL=egl` is set, producing GIF output without requiring a display.
+
 ### Google Colab
 
 The easiest way to get started is with Google Colab:
