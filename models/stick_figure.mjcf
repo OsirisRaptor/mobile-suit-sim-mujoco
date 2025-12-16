@@ -1,0 +1,165 @@
+<mujoco model="stick_figure">
+  <!-- Zero gravity for space simulation -->
+  <option gravity="0 0 0" timestep="0.01" integrator="RK4"/>
+
+  <!-- Visual settings -->
+  <visual>
+    <headlight ambient="0.4 0.4 0.4" diffuse="0.8 0.8 0.8"/>
+  </visual>
+
+  <!-- Default joint/geom properties -->
+  <default>
+    <joint damping="2.0" armature="0.1"/>
+    <geom contype="1" conaffinity="1" friction="1 0.5 0.5"/>
+    <site type="sphere" size="0.04" rgba="1 0.3 0 1"/>
+  </default>
+
+  <worldbody>
+    <!-- Ground plane for reference (visual only) -->
+    <geom name="floor" type="plane" size="10 10 0.1" rgba="0.2 0.2 0.2 0.3" contype="0" conaffinity="0"/>
+
+    <!-- Main torso - root of the kinematic chain -->
+    <body name="torso" pos="0 0 1.5">
+      <freejoint name="root"/>
+      <geom name="torso_geom" type="box" size="0.15 0.1 0.25" rgba="0.3 0.5 0.8 1" density="1000"/>
+
+      <!-- Thruster sites on torso -->
+      <site name="torso_front" pos="0.15 0 0"/>
+      <site name="torso_back" pos="-0.15 0 0"/>
+      <site name="torso_left" pos="0 0.1 0"/>
+      <site name="torso_right" pos="0 -0.1 0"/>
+      <site name="torso_top" pos="0 0 0.25"/>
+      <site name="torso_bottom" pos="0 0 -0.25"/>
+
+      <!-- ========== HEAD ========== -->
+      <body name="head" pos="0 0 0.35">
+        <joint name="neck_pitch" type="hinge" axis="0 1 0" range="-30 30" damping="1.0"/>
+        <joint name="neck_yaw" type="hinge" axis="0 0 1" range="-45 45" damping="1.0"/>
+        <geom name="head_geom" type="sphere" size="0.1" rgba="0.8 0.7 0.6 1" density="800"/>
+        <site name="head_top" pos="0 0 0.1"/>
+        <site name="head_front" pos="0.1 0 0"/>
+      </body>
+
+      <!-- ========== LEFT ARM ========== -->
+      <body name="left_upper_arm" pos="0 0.18 0.2">
+        <joint name="left_shoulder_pitch" type="hinge" axis="1 0 0" range="-180 180"/>
+        <joint name="left_shoulder_yaw" type="hinge" axis="0 0 1" range="-90 90"/>
+        <geom name="left_upper_arm_geom" type="capsule" fromto="0 0 0 0 0.25 0" size="0.04" rgba="0.3 0.5 0.8 1" density="800"/>
+        <site name="left_upper_arm_site" pos="0 0.125 0"/>
+
+        <body name="left_lower_arm" pos="0 0.25 0">
+          <joint name="left_elbow" type="hinge" axis="1 0 0" range="-150 0"/>
+          <geom name="left_lower_arm_geom" type="capsule" fromto="0 0 0 0 0.22 0" size="0.035" rgba="0.3 0.5 0.8 1" density="800"/>
+          <site name="left_lower_arm_site" pos="0 0.11 0"/>
+
+          <body name="left_hand" pos="0 0.22 0">
+            <joint name="left_wrist_pitch" type="hinge" axis="0 1 0" range="-60 60" damping="0.5"/>
+            <joint name="left_wrist_yaw" type="hinge" axis="0 0 1" range="-30 30" damping="0.5"/>
+            <geom name="left_hand_geom" type="box" size="0.02 0.04 0.06" rgba="0.8 0.7 0.6 1" density="600"/>
+            <site name="left_hand_site" pos="0 0.04 0"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ========== RIGHT ARM (mirror of left) ========== -->
+      <body name="right_upper_arm" pos="0 -0.18 0.2">
+        <joint name="right_shoulder_pitch" type="hinge" axis="1 0 0" range="-180 180"/>
+        <joint name="right_shoulder_yaw" type="hinge" axis="0 0 1" range="-90 90"/>
+        <geom name="right_upper_arm_geom" type="capsule" fromto="0 0 0 0 -0.25 0" size="0.04" rgba="0.3 0.5 0.8 1" density="800"/>
+        <site name="right_upper_arm_site" pos="0 -0.125 0"/>
+
+        <body name="right_lower_arm" pos="0 -0.25 0">
+          <joint name="right_elbow" type="hinge" axis="1 0 0" range="-150 0"/>
+          <geom name="right_lower_arm_geom" type="capsule" fromto="0 0 0 0 -0.22 0" size="0.035" rgba="0.3 0.5 0.8 1" density="800"/>
+          <site name="right_lower_arm_site" pos="0 -0.11 0"/>
+
+          <body name="right_hand" pos="0 -0.22 0">
+            <joint name="right_wrist_pitch" type="hinge" axis="0 1 0" range="-60 60" damping="0.5"/>
+            <joint name="right_wrist_yaw" type="hinge" axis="0 0 1" range="-30 30" damping="0.5"/>
+            <geom name="right_hand_geom" type="box" size="0.02 0.04 0.06" rgba="0.8 0.7 0.6 1" density="600"/>
+            <site name="right_hand_site" pos="0 -0.04 0"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ========== LEFT LEG ========== -->
+      <body name="left_upper_leg" pos="0 0.1 -0.3">
+        <joint name="left_hip_pitch" type="hinge" axis="0 1 0" range="-120 60"/>
+        <joint name="left_hip_roll" type="hinge" axis="1 0 0" range="-45 45"/>
+        <geom name="left_upper_leg_geom" type="capsule" fromto="0 0 0 0 0 -0.35" size="0.05" rgba="0.3 0.5 0.8 1" density="900"/>
+        <site name="left_upper_leg_site" pos="0 0 -0.175"/>
+
+        <body name="left_lower_leg" pos="0 0 -0.35">
+          <joint name="left_knee" type="hinge" axis="0 1 0" range="0 150"/>
+          <geom name="left_lower_leg_geom" type="capsule" fromto="0 0 0 0 0 -0.35" size="0.04" rgba="0.3 0.5 0.8 1" density="900"/>
+          <site name="left_lower_leg_site" pos="0 0 -0.175"/>
+
+          <body name="left_foot" pos="0 0 -0.35">
+            <joint name="left_ankle" type="hinge" axis="0 1 0" range="-45 45"/>
+            <geom name="left_foot_geom" type="box" size="0.08 0.04 0.02" pos="0.03 0 0" rgba="0.4 0.4 0.4 1" density="800"/>
+            <site name="left_foot_site" pos="0.06 0 -0.02"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ========== RIGHT LEG (mirror of left) ========== -->
+      <body name="right_upper_leg" pos="0 -0.1 -0.3">
+        <joint name="right_hip_pitch" type="hinge" axis="0 1 0" range="-120 60"/>
+        <joint name="right_hip_roll" type="hinge" axis="1 0 0" range="-45 45"/>
+        <geom name="right_upper_leg_geom" type="capsule" fromto="0 0 0 0 0 -0.35" size="0.05" rgba="0.3 0.5 0.8 1" density="900"/>
+        <site name="right_upper_leg_site" pos="0 0 -0.175"/>
+
+        <body name="right_lower_leg" pos="0 0 -0.35">
+          <joint name="right_knee" type="hinge" axis="0 1 0" range="0 150"/>
+          <geom name="right_lower_leg_geom" type="capsule" fromto="0 0 0 0 0 -0.35" size="0.04" rgba="0.3 0.5 0.8 1" density="900"/>
+          <site name="right_lower_leg_site" pos="0 0 -0.175"/>
+
+          <body name="right_foot" pos="0 0 -0.35">
+            <joint name="right_ankle" type="hinge" axis="0 1 0" range="-45 45"/>
+            <geom name="right_foot_geom" type="box" size="0.08 0.04 0.02" pos="0.03 0 0" rgba="0.4 0.4 0.4 1" density="800"/>
+            <site name="right_foot_site" pos="0.06 0 -0.02"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ========== BACKPACK (for main thrusters) ========== -->
+      <body name="backpack" pos="-0.2 0 0.1">
+        <geom name="backpack_geom" type="box" size="0.08 0.12 0.2" rgba="0.5 0.5 0.5 1" density="500"/>
+        <site name="backpack_top" pos="0 0 0.2"/>
+        <site name="backpack_bottom" pos="0 0 -0.2"/>
+        <site name="backpack_left" pos="0 0.12 0"/>
+        <site name="backpack_right" pos="0 -0.12 0"/>
+        <site name="backpack_rear" pos="-0.08 0 0"/>
+      </body>
+
+    </body>
+
+    <!-- Cameras for viewing -->
+    <camera name="fixed" pos="3 3 2" xyaxes="-1 1 0 0 0 1"/>
+    <camera name="front" pos="3 0 1.5" xyaxes="0 1 0 0 0 1"/>
+    <camera name="side" pos="0 3 1.5" xyaxes="-1 0 0 0 0 1"/>
+    <camera name="top" pos="0 0 5" xyaxes="0 1 0 -1 0 0"/>
+  </worldbody>
+
+  <!-- Actuators will be added dynamically for thrusters -->
+  <actuator>
+    <!-- Joint actuators for limb control (AMBAC) -->
+    <motor name="left_shoulder_pitch_act" joint="left_shoulder_pitch" ctrlrange="-50 50" ctrllimited="true"/>
+    <motor name="left_shoulder_yaw_act" joint="left_shoulder_yaw" ctrlrange="-50 50" ctrllimited="true"/>
+    <motor name="left_elbow_act" joint="left_elbow" ctrlrange="-50 50" ctrllimited="true"/>
+
+    <motor name="right_shoulder_pitch_act" joint="right_shoulder_pitch" ctrlrange="-50 50" ctrllimited="true"/>
+    <motor name="right_shoulder_yaw_act" joint="right_shoulder_yaw" ctrlrange="-50 50" ctrllimited="true"/>
+    <motor name="right_elbow_act" joint="right_elbow" ctrlrange="-50 50" ctrllimited="true"/>
+
+    <motor name="left_hip_pitch_act" joint="left_hip_pitch" ctrlrange="-100 100" ctrllimited="true"/>
+    <motor name="left_hip_roll_act" joint="left_hip_roll" ctrlrange="-50 50" ctrllimited="true"/>
+    <motor name="left_knee_act" joint="left_knee" ctrlrange="-100 100" ctrllimited="true"/>
+    <motor name="left_ankle_act" joint="left_ankle" ctrlrange="-50 50" ctrllimited="true"/>
+
+    <motor name="right_hip_pitch_act" joint="right_hip_pitch" ctrlrange="-100 100" ctrllimited="true"/>
+    <motor name="right_hip_roll_act" joint="right_hip_roll" ctrlrange="-50 50" ctrllimited="true"/>
+    <motor name="right_knee_act" joint="right_knee" ctrlrange="-100 100" ctrllimited="true"/>
+    <motor name="right_ankle_act" joint="right_ankle" ctrlrange="-50 50" ctrllimited="true"/>
+  </actuator>
+</mujoco>
